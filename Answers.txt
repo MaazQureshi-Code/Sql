@@ -1,0 +1,147 @@
+
+
+
+1. Retrieve the total number of customers in the system.
+
+
+SELECT COUNT(*) AS total_customers
+FROM customers;
+
+2. List the names and prices of products in the "Electronics" category that are priced above $500.
+
+
+SELECT name, price
+FROM products
+WHERE category = 'Electronics' AND price > 500;
+
+3. What are the details of the order for the customer "Clark Kent"?
+
+
+SELECT o.order_id, o.order_date, o.total_amount, o.order_status
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id
+WHERE c.name = 'Clark Kent';
+
+4. How many orders contain the product "Samsung Galaxy S22"?
+
+
+SELECT COUNT(DISTINCT o.order_id) AS order_count
+FROM orders o
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+WHERE p.name = 'Samsung Galaxy S22';
+
+5. Retrieve the status of the order made on '05-OCT-24'.
+
+
+SELECT order_id, order_status
+FROM orders
+WHERE order_date = '05-OCT-24';
+
+6. Find all orders with a total amount greater than $1,000.
+
+
+SELECT order_id, customer_id, total_amount, order_status
+FROM orders
+WHERE total_amount > 1000;
+
+7. Retrieve the most expensive camera product.
+
+
+SELECT *
+FROM products
+WHERE category = 'Cameras' AND price = (SELECT MAX(price) FROM products WHERE category = 'Cameras');
+
+
+8.Retrieve the order ID and the total price of orders that contain more than one product.
+
+
+SELECT oi.order_id, SUM(p.price * oi.quantity) AS total_price
+FROM order_items oi
+JOIN products p ON oi.product_id = p.product_id
+GROUP BY oi.order_id
+HAVING COUNT(oi.product_id) > 1;
+
+9.List the product IDs, names, categories, and prices for all products included in the order with the order ID 'O002'.
+
+
+SELECT p.product_id, p.name, p.category, p.price
+FROM order_items oi
+JOIN products p ON oi.product_id = p.product_id
+WHERE oi.order_id = 'O002';
+
+10. Find the customer who placed the highest number of orders.
+
+
+SELECT c.name, COUNT(o.order_id) AS order_count
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.name
+ORDER BY order_count DESC
+FETCH FIRST 1 ROW ONLY;
+
+11. List all products that have not been ordered.
+
+
+SELECT p.product_id, p.name, p.category, p.price
+FROM products p
+LEFT JOIN order_items oi ON p.product_id = oi.product_id
+WHERE oi.product_id IS NULL;
+
+12. Find customers who have placed multiple orders.
+
+
+SELECT customer_id, COUNT(order_id) AS order_count
+FROM orders
+GROUP BY customer_id
+HAVING COUNT(order_id) > 1;
+
+13. Find the most ordered product.
+
+
+SELECT p.name, COUNT(oi.product_id) AS order_count
+FROM products p
+JOIN order_items oi ON p.product_id = oi.product_id
+GROUP BY p.name
+ORDER BY order_count DESC
+FETCH FIRST 1 ROW ONLY;
+
+14. Insert a new customer into the "customers" table and their contact details into the "customer_details" table using a PL/SQL block.
+
+
+DECLARE
+    new_customer_id VARCHAR2(4) := 'C028';
+    new_detail_id VARCHAR2(4) := 'D028';
+BEGIN
+    INSERT INTO customers (customer_id, name, email) 
+    VALUES (new_customer_id, 'Jane3 Doe', 'jane3.doe@example.com');
+
+    INSERT INTO customer_details (detail_id, customer_id, address, phone_number) 
+    VALUES (new_detail_id, new_customer_id, '123 Main St, Springfield', '123-456-7890');
+END;
+
+
+
+LAB 6
+1.Create a trigger that automatically updates the status of an order to 'Shipped' when the payment status is updated to 'Completed' in the payments table. After creating the trigger, test it by updating a payment status to 'Completed' and verify if the corresponding order's status has been updated.
+
+CREATE OR REPLACE TRIGGER update_order_status
+AFTER UPDATE OF payment_status ON payments
+FOR EACH ROW
+BEGIN
+    IF :NEW.payment_status = 'Completed' THEN
+        UPDATE orders
+        SET order_status = 'Shipped'
+        WHERE order_id = :NEW.order_id;
+    END IF;
+END;
+
+UPDATE payments
+SET payment_status = 'Completed'
+WHERE payment_id = 'P001';
+
+
+SELECT order_id, order_status
+FROM orders
+WHERE order_id = (SELECT order_id FROM payments WHERE payment_id = 'P001');
+

@@ -1,0 +1,234 @@
+-- Create Customers Table
+CREATE TABLE customers (
+    customer_id VARCHAR2(4) NOT NULL CONSTRAINT pk_customer PRIMARY KEY,
+    name VARCHAR2(100) NOT NULL,
+    email VARCHAR2(100) UNIQUE NOT NULL
+);
+
+-- Create Customer Details Table
+CREATE TABLE customer_details (
+    detail_id VARCHAR2(4) NOT NULL CONSTRAINT pk_customer_details PRIMARY KEY,
+    customer_id VARCHAR2(4) NOT NULL,
+    address VARCHAR2(255) NOT NULL,
+    phone_number VARCHAR2(20) NOT NULL,
+    CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+
+-- Create Products Table
+CREATE TABLE products (
+    product_id VARCHAR2(4) NOT NULL CONSTRAINT pk_product PRIMARY KEY,
+    name VARCHAR2(100) NOT NULL CONSTRAINT unique_product_name UNIQUE,
+    category VARCHAR2(50) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL
+);
+
+
+-- Create Orders Table
+CREATE TABLE orders (
+    order_id VARCHAR2(4) NOT NULL CONSTRAINT pk_order PRIMARY KEY,
+    customer_id VARCHAR2(4) NOT NULL,
+    order_date DATE NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    order_status VARCHAR2(20) CHECK (order_status IN ('Pending', 'Shipped', 'Delivered')) NOT NULL,
+    CONSTRAINT fk_customer_order FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+
+-- Create Order Items Table
+CREATE TABLE order_items (
+    order_item_id VARCHAR2(4) NOT NULL CONSTRAINT pk_order_item PRIMARY KEY,
+    order_id VARCHAR2(4) NOT NULL,
+    product_id VARCHAR2(4) NOT NULL,
+    quantity INT NOT NULL,
+    CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+-- Create Payments Table
+CREATE TABLE payments (
+    payment_id VARCHAR2(4) NOT NULL CONSTRAINT pk_payment PRIMARY KEY,
+    order_id VARCHAR2(4) NOT NULL,
+    payment_method VARCHAR2(20) CHECK (payment_method IN ('CreditCard', 'PayPal')) NOT NULL,
+    payment_status VARCHAR2(20) CHECK (payment_status IN ('Completed', 'Pending', 'Failed')) NOT NULL,
+    payment_date DATE NOT NULL,
+    CONSTRAINT fk_order_payment FOREIGN KEY (order_id) REFERENCES orders(order_id)
+);
+
+-- Insert Customers (Including Those Without Orders)
+INSERT INTO customers (customer_id, name, email) VALUES ('C001', 'John Doe', 'john.doe@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C002', 'Emily Clark', 'emily.clark@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C003', 'Alice Johnson', 'alice.johnson@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C004', 'Michael Smith', 'michael.smith@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C005', 'David Brown', 'david.brown@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C006', 'Sophia White', 'sophia.white@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C007', 'James Lee', 'james.lee@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C008', 'Olivia Wilson', 'olivia.wilson@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C009', 'Liam Walker', 'liam.walker@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C010', 'Emma Harris', 'emma.harris@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C011', 'William Martinez', 'william.martinez@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C012', 'Ava Garcia', 'ava.garcia@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C013', 'Ethan Lewis', 'ethan.lewis@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C014', 'Mia Clark', 'mia.clark@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C015', 'Lucas Young', 'lucas.young@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C016', 'Ella King', 'ella.king@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C017', 'Mason Allen', 'mason.allen@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C018', 'Amelia Scott', 'amelia.scott@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C019', 'Noah Wright', 'noah.wright@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C020', 'Isabella Green', 'isabella.green@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C021', 'Michael Jordan', 'michael.jordan@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C022', 'Sarah Connor', 'sarah.connor@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C023', 'Bruce Wayne', 'bruce.wayne@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C024', 'Clark Kent', 'clark.kent@example.com');
+INSERT INTO customers (customer_id, name, email) VALUES ('C025', 'Diana Prince', 'diana.prince@example.com');
+
+-- Insert Customer Details (Including for Those Without Orders)
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D001', 'C001', '123 Elm Street, Springfield', '123-456-7890');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D002', 'C002', '456 Maple Avenue, Rivertown', '987-654-3210');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D003', 'C003', '789 Oak Street, Cityville', '234-567-8901');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D004', 'C004', '101 Pine Avenue, Beachside', '345-678-9012');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D005', 'C005', '500 Birch Lane, Uptown', '456-789-0123');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D006', 'C006', '902 Cedar Street, Midtown', '567-890-1234');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D007', 'C007', '321 Maple Drive, Downtown', '678-901-2345');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D008', 'C008', '230 Palm Road, Seaside', '789-012-3456');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D009', 'C009', '740 Park Avenue, Lakeside', '890-123-4567');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D010', 'C010', '15 Elmwood Street, Hillside', '901-234-5678');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D011', 'C011', '44 Cypress Street, Valleyview', '012-345-6789');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D012', 'C012', '9 Willow Lane, Mountainview', '123-654-7890');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D013', 'C013', '700 Redwood Drive, Forestside', '234-765-8901');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D014', 'C014', '16 Magnolia Street, Riverbank', '345-876-9012');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D015', 'C015', '22 Poplar Road, Countryside', '456-987-0123');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D016', 'C016', '88 Palm Avenue, Clifftown', '567-098-1234');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D017', 'C017', '101 Cedar Boulevard, Beachtown', '678-109-2345');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D018', 'C018', '36 Maplewood Avenue, Westfield', '789-210-3456');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D019', 'C019', '68 Spruce Road, Northtown', '890-321-4567');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D020', 'C020', '140 Oakwood Lane, Eastpoint', '901-432-5678');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D021', 'C021', '100 Air Jordan Way, Chicago', '312-555-1000');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D022', 'C022', '123 Skynet St, Los Angeles', '213-555-2000');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D023', 'C023', '100 Wayne Manor, Gotham', '111-555-3000');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D024', 'C024', '200 Kent Farm, Smallville', '785-555-4000');
+INSERT INTO customer_details (detail_id, customer_id, address, phone_number) VALUES ('D025', 'C025', '300 Themyscira Blvd, New York', '212-555-5000');
+
+
+-- Products Table (Including Some Not in Any Order)
+INSERT INTO products (product_id, name, category, price) VALUES ('P001', 'iPhone 14 Pro', 'Electronics', 999.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P002', 'Dell XPS 15', 'Electronics', 1500.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P003', 'Sony WH-1000XM4', 'Accessories', 350.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P004', 'Samsung Galaxy S22', 'Electronics', 899.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P005', 'MacBook Pro', 'Electronics', 2000.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P006', 'Bose QuietComfort 45', 'Accessories', 299.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P007', 'Apple Watch Series 7', 'Electronics', 429.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P008', 'Asus ROG Zephyrus', 'Electronics', 1800.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P009', 'Google Pixel 6', 'Electronics', 599.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P010', 'Sony A7 III', 'Cameras', 1800.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P011', 'Canon EOS R', 'Cameras', 2000.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P012', 'Nikon Z6 II', 'Cameras', 1800.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P013', 'Microsoft Surface Pro 8', 'Electronics', 1100.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P014', 'Logitech MX Master 3', 'Accessories', 100.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P015', 'Sony Bravia 65-Inch TV', 'Electronics', 1200.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P016', 'JBL Flip 5 Speaker', 'Accessories', 120.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P017', 'Samsung QLED TV', 'Electronics', 1500.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P018', 'HP Spectre x360', 'Electronics', 1400.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P019', 'GoPro HERO9', 'Cameras', 500.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P020', 'Beats Studio3', 'Accessories', 349.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P021', 'Oculus Quest 2', 'Electronics', 299.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P022', 'DJI Mavic Air 2', 'Drones', 799.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P023', 'Instant Pot Duo', 'Home Appliances', 89.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P024', 'Apple AirPods Pro', 'Accessories', 249.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P025', 'Sony PlayStation 5', 'Gaming', 499.00);
+INSERT INTO products (product_id, name, category, price) VALUES ('P026', 'XBox', 'Gaming', 700.00);
+
+
+
+-- Orders Table (Including Multiple Orders for Some Customers, and Some with No Order Items)
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O001', 'C001', DATE '2024-10-05', 999.00, 'Pending');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O002', 'C002', DATE '2024-11-01', 1850.00, 'Shipped');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O003', 'C003', DATE '2024-09-15', 350.00, 'Delivered');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O004', 'C004', DATE '2024-08-20', 2000.00, 'Shipped');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O005', 'C005', DATE '2024-07-10', 899.00, 'Delivered');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O006', 'C006', DATE '2024-06-25', 1800.00, 'Pending');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O007', 'C007', DATE '2024-05-18', 429.00, 'Shipped');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O008', 'C008', DATE '2024-04-15', 1800.00, 'Delivered');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O009', 'C009', DATE '2024-03-20', 299.00, 'Pending');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O010', 'C010', DATE '2024-02-25', 599.00, 'Delivered');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O011', 'C011', DATE '2024-01-15', 100.00, 'Pending');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O012', 'C012', DATE '2023-12-30', 2000.00, 'Delivered');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O013', 'C013', DATE '2023-11-25', 1200.00, 'Shipped');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O014', 'C014', DATE '2023-10-20', 120.00, 'Pending');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O015', 'C015', DATE '2023-09-15', 1100.00, 'Delivered');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O016', 'C016', DATE '2023-08-10', 350.00, 'Shipped');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O017', 'C017', DATE '2023-07-01', 999.00, 'Delivered');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O018', 'C018', DATE '2023-06-20', 1800.00, 'Pending');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O019', 'C019', DATE '2023-05-15', 1500.00, 'Shipped');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O020', 'C020', DATE '2023-04-05', 350.00, 'Delivered');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O021', 'C023', DATE '2024-11-15', 589.00, 'Pending');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O022', 'C023', DATE '2024-12-01', 999.00, 'Shipped'); 
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O023', 'C024', DATE '2024-10-10', 1249.00, 'Delivered'); 
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O024', 'C024', DATE '2024-11-20', 499.00, 'Pending'); 
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O025', 'C020', DATE '2024-10-30', 0.00, 'Pending');
+
+
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O026', 'C005', DATE '2024-12-05', 899.00, 'Pending');
+INSERT INTO orders (order_id, customer_id, order_date, total_amount, order_status) VALUES ('O027', 'C008', DATE '2024-12-07', 1798.00, 'Shipped');
+
+ 
+
+
+-- Insert data into the order_items table
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI01', 'O001', 'P001', 2);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI02', 'O002', 'P002', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI03', 'O002', 'P003', 3);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI04', 'O003', 'P004', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI05', 'O004', 'P005', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI06', 'O005', 'P006', 2);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI07', 'O006', 'P007', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI08', 'O007', 'P008', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI09', 'O008', 'P009', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI10', 'O009', 'P010', 2);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI11', 'O010', 'P011', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI12', 'O011', 'P012', 3);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI13', 'O012', 'P013', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI14', 'O013', 'P014', 2);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI15', 'O014', 'P015', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI16', 'O015', 'P016', 4);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI17', 'O016', 'P017', 2);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI18', 'O017', 'P018', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI19', 'O018', 'P019', 2);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI20', 'O019', 'P020', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI21', 'O020', 'P021', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI22', 'O021', 'P022', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI23', 'O022', 'P023', 3);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI24', 'O023', 'P024', 1);
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI25', 'O024', 'P025', 2);
+
+
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI26', 'O026', 'P004', 1); 
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity) VALUES ('OI27', 'O027', 'P004', 2); 
+
+
+
+-- Payments for the newly added orders
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P001', 'O001', 'CreditCard', 'Completed', DATE '2024-10-06');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P002', 'O002', 'PayPal', 'Completed', DATE '2024-11-02');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P003', 'O003', 'CreditCard', 'Completed', DATE '2024-09-16');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P004', 'O004', 'CreditCard', 'Completed', DATE '2024-08-21');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P005', 'O005', 'PayPal', 'Completed', DATE '2024-07-11');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P006', 'O006', 'CreditCard', 'Pending', DATE '2024-06-26');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P007', 'O007', 'CreditCard', 'Completed', DATE '2024-05-19');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P008', 'O008', 'PayPal', 'Completed', DATE '2024-04-16');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P009', 'O009', 'CreditCard', 'Pending', DATE '2024-03-21');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P010', 'O010', 'CreditCard', 'Completed', DATE '2024-02-26');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P011', 'O011', 'PayPal', 'Pending', DATE '2024-01-16');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P012', 'O012', 'CreditCard', 'Completed', DATE '2023-12-31');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P013', 'O013', 'PayPal', 'Completed', DATE '2023-11-26');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P014', 'O014', 'CreditCard', 'Pending', DATE '2023-10-21');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P015', 'O015', 'CreditCard', 'Completed', DATE '2023-09-16');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P016', 'O016', 'PayPal', 'Completed', DATE '2023-08-11');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P017', 'O017', 'CreditCard', 'Completed', DATE '2023-07-02');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P018', 'O018', 'CreditCard', 'Pending', DATE '2023-06-21');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P019', 'O019', 'PayPal', 'Completed', DATE '2023-05-16');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P020', 'O020', 'CreditCard', 'Completed', DATE '2023-04-06');
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P021', 'O021', 'CreditCard', 'Completed', DATE '2024-11-16'); 
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P022', 'O022', 'PayPal', 'Completed', DATE '2024-12-02'); 
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P023', 'O023', 'CreditCard', 'Completed', DATE '2024-10-11'); 
+INSERT INTO payments (payment_id, order_id, payment_method, payment_status, payment_date) VALUES ('P024', 'O024', 'PayPal', 'Pending', DATE '2024-11-21');
+-- No payment for O025 to simulate an order without payment information
+
